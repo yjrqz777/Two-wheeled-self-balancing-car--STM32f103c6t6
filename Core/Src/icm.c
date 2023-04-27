@@ -1,5 +1,3 @@
-#include "main.h"
-
 /*********************************************************************************************************************
  * COPYRIGHT NOTICE
  * Copyright (c) 2018,逐飞科技
@@ -24,8 +22,6 @@
 					------------------------------------ 
  ********************************************************************************************************************/
 
-
-#include "main.h"
 #include "stm32f1xx_hal.h"
 #include "icm.h"
 #include <math.h>
@@ -33,7 +29,8 @@
 int16_t icm_gyro_x,icm_gyro_y,icm_gyro_z;
 int16_t icm_acc_x,icm_acc_y,icm_acc_z;
 
-
+int16_t kicm_gyro_x,kicm_gyro_y,kicm_gyro_z;
+int16_t kicm_acc_x,kicm_acc_y,kicm_acc_z;
 
 //-------------------------------------------------------------------------------------------------------------------
 //  以下函数是使用软件SPI通信，相比较硬件SPI，软件SPI引脚更加灵活，可以使用任意普通IO
@@ -124,6 +121,14 @@ void get_icm20602_accdata_simspi(void)
     icm_acc_x = (int16_t)(((uint16_t)dat[0]<<8 | dat[1]));
     icm_acc_y = (int16_t)(((uint16_t)dat[2]<<8 | dat[3]));
     icm_acc_z = (int16_t)(((uint16_t)dat[4]<<8 | dat[5]));
+	
+		kalmanFilter(&KFP_acc_x,icm_acc_x);
+		kalmanFilter(&KFP_acc_y,icm_acc_y);
+		kalmanFilter(&KFP_acc_z,icm_acc_z);
+	
+//		icm_acc_x=KFP_acc_x.out;
+//		icm_acc_y=KFP_acc_y.out;
+//		icm_acc_z=KFP_acc_z.out;
 }
 
 //-------------------------------------------------------------------------------------------------------------------
@@ -141,6 +146,15 @@ void get_icm20602_gyro_simspi(void)
     icm_gyro_x = (int16_t)(((uint16_t)dat[0]<<8 | dat[1]));
     icm_gyro_y = (int16_t)(((uint16_t)dat[2]<<8 | dat[3]));
     icm_gyro_z = (int16_t)(((uint16_t)dat[4]<<8 | dat[5]));
+	
+	
+		kalmanFilter(&KFP_gyro_x,icm_gyro_x);
+		kalmanFilter(&KFP_gyro_y,icm_gyro_y);
+		kalmanFilter(&KFP_gyro_z,icm_gyro_z);
+	
+		icm_gyro_x=KFP_gyro_x.out;
+		icm_gyro_y=KFP_gyro_y.out;
+		icm_gyro_z=KFP_gyro_z.out;
 }
 
 
@@ -436,14 +450,14 @@ void ICM_getAngle(void)
 //    eulerAngle.yaw = atan2(2 * q1 * q2 + 2 * q0 * q3, -2 * q2 * q2 - 2 * q3 * q3 + 1) * 180 / PI;
 		
 			eulerAngle.pitch = asin(-2 * q1 * q3 + 2 * q0 * q2)*180 / PI;
-//			eulerAngle.roll = atan2(2 * q2 * q3 + 2 * q0 * q1, -2 * q1 * q1 - 2 * q2 * q2 + 1)*180 / PI;
+////			eulerAngle.roll = atan2(2 * q2 * q3 + 2 * q0 * q1, -2 * q1 * q1 - 2 * q2 * q2 + 1)*180 / PI;
 //			eulerAngle.yaw = atan2(2 * q1 * q2 + 2 * q0 * q3, -2 * q2 * q2 - 2 * q3 * q3 + 1) * 180 / PI;
 
 
     //低通滤波
-    eulerAngle.pitch = k*eulerAngle.pitch+(1-k)*pitch_last;
-		kalmanFilter(&KFP_gyro2,(float)eulerAngle.pitch);
-		eulerAngle.pitch=KFP_gyro2.out;
+//    eulerAngle.pitch = k*eulerAngle.pitch+(1-k)*pitch_last;
+//		kalmanFilter(&KFP_gyro2,(float)eulerAngle.pitch);
+//		eulerAngle.pitch=KFP_gyro2.out;
 //    eulerAngle.roll = k*eulerAngle.roll+(1-k)*roll_last;
 //    eulerAngle.yaw = k*eulerAngle.yaw+(1-k)*yaw_last;
 ////		if(yaw_last>179)

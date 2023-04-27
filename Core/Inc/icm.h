@@ -23,7 +23,7 @@
 					------------------------------------ 
  ********************************************************************************************************************/
 #include "main.h"
-#include "stm32f1xx_hal.h"
+//#include "stm32f1xx_hal.h"
 
 #ifndef _SEEKFREE_ICM20602_h
 #define _SEEKFREE_ICM20602_h
@@ -162,7 +162,8 @@ double my_asin(double x);
 
 extern int16_t icm_gyro_x,icm_gyro_y,icm_gyro_z;
 extern int16_t icm_acc_x,icm_acc_y,icm_acc_z;
-
+extern int16_t kicm_gyro_x,kicm_gyro_y,kicm_gyro_z;
+extern int16_t kicm_acc_x,kicm_acc_y,kicm_acc_z;
 
 
 

@@ -33,11 +33,12 @@
 #include "encoder.h"
 #include "pid.h"
 #include "moto.h"
+#include "key.h"
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
 /* USER CODE BEGIN PTD */
-uint8_t xx=0;
+
 /* USER CODE END PTD */
 
 /* Private define ------------------------------------------------------------*/
@@ -123,8 +124,8 @@ int main(void)
 	PID_init();
 	icm20602_init_simspi();
 	gyroOffset_init();
-		OLED_Init();
-	OLED_Clear();
+//		OLED_Init();
+//	OLED_Clear();
 	HAL_TIM_Base_Start_IT(&htim2);
 	HAL_TIM_PWM_Start(&htim2,TIM_CHANNEL_3);
 	__HAL_TIM_CLEAR_IT(&htim2,TIM_CHANNEL_3);
@@ -155,20 +156,25 @@ int main(void)
     /* USER CODE END WHILE */
 
     /* USER CODE BEGIN 3 */
-		encoder();
-		uint32_t enc1=0;
-		
-		enc1 = (uint32_t)(__HAL_TIM_GET_COUNTER(&htim1));//获取定时器的值
-		
-				uint32_t enc2=0;
+//		encoder();
+//		uint32_t enc1=0;
 //		
-		enc2 = (uint32_t)(__HAL_TIM_GET_COUNTER(&htim3));//获取定时器的值
+//		enc1 = (uint32_t)(__HAL_TIM_GET_COUNTER(&htim1));//获取定时器的值
+//		
+//				uint32_t enc2=0;
+////		
+//		enc2 = (uint32_t)(__HAL_TIM_GET_COUNTER(&htim3));//获取定时器的值
 //		HAL_GPIO_WritePin(GPIOC,GPIO_PIN_13,0);
 //		HAL_Delay(10);
 //		HAL_GPIO_WritePin(GPIOC,GPIO_PIN_13,1);
 //		HAL_Delay(10);               // Device header
-		printf("%d,%d,3\n",enc1,enc2);
-//		printf("%d,%f,%f,%f,%d,%f\n",enc1,pid[1].fOutput,pid[2].fOutput,pid[3].fOutput,icm_gyro_y,eulerAngle.pitch);
+//		printf("%d,%d,%f\n",enc1,enc2,pid[1].fOutput);
+			printf("%d,%f,%f,%f,%d,%f,%f,%f\n",enc1,pid[1].fOutput,pid[2].fOutput,pid[3].fOutput,icm_gyro_y,sum,eulerAngle.pitch,key1_num);
+//			printf("%d,%d,%d,%d,%d,%d\n",icm_gyro_x,icm_gyro_y,icm_gyro_z,icm_acc_x,icm_acc_y,icm_acc_z);
+		
+		
+//		printf("%d,%d,%d,%d,%d,%d\n",icm_gyro_x,icm_gyro_y,icm_gyro_z,kicm_gyro_x,kicm_gyro_y,kicm_gyro_z);
+//		printf("%d,%d,%d,%f,%f,%f\n",icm_gyro_x,icm_gyro_y,icm_gyro_z,eulerAngle.roll,eulerAngle.yaw,eulerAngle.pitch);
 //		xx=1;
 //		if(eulerAngle.pitch>10 | eulerAngle.pitch<-10)
 //		{

@@ -73,6 +73,10 @@ void Error_Handler(void);
 /* USER CODE END EFP */
 
 /* Private defines -----------------------------------------------------------*/
+#define key2_Pin GPIO_PIN_14
+#define key2_GPIO_Port GPIOC
+#define key1_Pin GPIO_PIN_15
+#define key1_GPIO_Port GPIOC
 #define sck_Pin GPIO_PIN_5
 #define sck_GPIO_Port GPIOA
 #define mosi_Pin GPIO_PIN_6

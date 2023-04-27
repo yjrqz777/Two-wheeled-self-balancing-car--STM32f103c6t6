@@ -25,6 +25,7 @@
 #include "icm.h"
 #include "encoder.h"
 #include "moto.h"
+#include "key.h"
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -192,9 +193,8 @@ void SysTick_Handler(void)
 	{
 		time=0;
 		ICM_getAngle();
-		if(xx==1)contorl();
+		contorl();
 	}
-	
 	
 	if(++time1==5)
 	{

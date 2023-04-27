@@ -16,6 +16,8 @@ struct pidData       //定义数法核心数据
     float fKi;      //速度PID，Kb = Kp * ( T / Ti ) 
     float fKd;      //速度PID，
     
+		float i_erro_limit;
+	
 		float fSum;
 	
     float fOutput;    //电机控制输出值    

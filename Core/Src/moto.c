@@ -6,31 +6,28 @@
 #include "icm.h"
 #include <math.h>
 #include "filter.h"
-
-
-
+#include "key.h"
+	float sum=0;
 
 void contorl_speed(float speed)
 {
 	pid[1].sRef=speed;
 	pid[1].sFeedBack=enc1;
 	PID_Realize(&pid[1],1);
+	
+	
+	static float x=0;
+		if(pid[1].fOutput==x)pid[1].fOutput=0;
+	x=pid[1].fOutput;
 }
 
 
 void contorl_balance(void)
 {
-	pid[2].sRef=pid[1].fOutput;
-	pid[2].sFeedBack=eulerAngle.pitch+1.6;
+	pid[2].sRef=0;
+	pid[2].sFeedBack=eulerAngle.pitch;
 	PID_Realize(&pid[2],2);
 	
-	
-//	kalmanFilter(&KFP_gyro22,(float)pid[2].fOutput);
-//	pid[2].fOutput=KFP_gyro22.out;
-//	moto_contorl(pid[2].fOutput);
-//	contorl_speed(pid[2].fOutput);
-	
-//	contorl_balance()
 }
 
 
@@ -39,30 +36,29 @@ void contorl_balance(void)
 void contorl_gyro(void)
 {
 //	
-	float k=0.3;
-	int icm_gyro_y_last=0;
-	icm_gyro_y=k*icm_gyro_y+(1-k)*icm_gyro_y_last;
-	icm_gyro_y_last=icm_gyro_y;
-//	for(i=0;i<4;i++)
-//	{
-//		sum+=icm_gyro_y;
-//	}
-//	icm_gyro_y=sum/4;
-//	icm_gyro_y=get_em_fitter_data();
-//	icm_gyro_y=filter9();
-	kalmanFilter(&KFP_gyro,(float)icm_gyro_y);
-	icm_gyro_y=KFP_gyro.out;
+		
+//	sum=0;
+//	static float y =0;
+//	static float dy =0;
+//	static float ddy =0;
+//		sum = icm_gyro_y+y+dy+ddy;
+//	ddy=dy;
+//	dy=y;
+//	y=icm_gyro_y;
+//	
+//	sum=sum/4;
+	pid[3].sRef=0;
+	pid[3].sFeedBack=icm_gyro_y+9;
+ 	PID_Realize(&pid[3],3);
 	
-	
-	
-	
-	pid[3].sRef=pid[2].fOutput;
-//		pid[3].sRef=0;
-	pid[3].sFeedBack=icm_gyro_y+16;
-	PID_Realize(&pid[3],3);
 
-	
-	moto_contorl(pid[3].fOutput,pid[3].fOutput);
+//	moto_contorl(pid[3].fOutput+pid[2].fOutput,pid[3].fOutput+pid[2].fOutput);
+	//if((pid[1].fOutput<30 && pid[1].fOutput>0)|(pid[1].fOutput>-30 && pid[1].fOutput<0))
+		pid[1].fOutput=0;
+
+	moto_contorl(pid[3].fOutput+pid[2].fOutput+pid[1].fOutput,pid[3].fOutput+pid[2].fOutput+pid[1].fOutput);
+//	moto_contorl(pid[1].fOutput,pid[1].fOutput);
+//	moto_contorl(30,30);
 	
 }
 
@@ -70,18 +66,21 @@ void contorl_gyro(void)
 void contorl(void)
 {
 
+//	pid[3].fKp=key1_num;
+	
 	contorl_speed(0);
 	contorl_balance();
-	contorl_gyro();
-
+	contorl_gyro();				
+//  pid[3].fOutput=balance((float)eulerAngle.pitch+2,(float)icm_gyro_y);
+//	moto_contorl(pid[3].fOutput,pid[3].fOutput);
 }
 
 
 
 void moto_contorl1(float speed)
 {
-	if(speed>1000)speed=1000;
-	if(speed<-1000)speed=-1000;
+//	if(speed>1000)speed=1000;
+//	if(speed<-1000)speed=-1000;
 	
 
 	if(speed>0)
@@ -157,20 +156,15 @@ void moto_contorl(float speed_A, float speed_B)
 //////////////////////////////////////////////////00000000000
 	if(speed_A==0)
 	{
-		HAL_GPIO_WritePin(B1_GPIO_Port,B1_Pin,GPIO_PIN_RESET);
-		HAL_GPIO_WritePin(B2_GPIO_Port,B2_Pin,GPIO_PIN_RESET);
+
 		HAL_GPIO_WritePin(A1_GPIO_Port,A1_Pin,GPIO_PIN_RESET);
 		HAL_GPIO_WritePin(A2_GPIO_Port,A2_Pin,GPIO_PIN_RESET);
-		__HAL_TIM_SET_COMPARE(&htim2,TIM_CHANNEL_4,0);	
 		__HAL_TIM_SET_COMPARE(&htim2,TIM_CHANNEL_3,0);	
 	}
 	if(speed_B==0)
 	{
 		HAL_GPIO_WritePin(B1_GPIO_Port,B1_Pin,GPIO_PIN_RESET);
 		HAL_GPIO_WritePin(B2_GPIO_Port,B2_Pin,GPIO_PIN_RESET);
-		HAL_GPIO_WritePin(A1_GPIO_Port,A1_Pin,GPIO_PIN_RESET);
-		HAL_GPIO_WritePin(A2_GPIO_Port,A2_Pin,GPIO_PIN_RESET);
 		__HAL_TIM_SET_COMPARE(&htim2,TIM_CHANNEL_4,0);	
-		__HAL_TIM_SET_COMPARE(&htim2,TIM_CHANNEL_3,0);	
 	}
 }
