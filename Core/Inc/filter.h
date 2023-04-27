@@ -1,28 +1,36 @@
 #ifndef __FILTER_H
 #define __FILTER_H
   /**************************************************************************
-×÷Õß£ºÆ½ºâĞ¡³µÖ®¼Ò
-ÎÒµÄÌÔ±¦Ğ¡µê£ºhttp://shop114407458.taobao.com/
+ä½œè€…ï¼šå¹³è¡¡å°è½¦ä¹‹å®¶
+æˆ‘çš„æ·˜å®å°åº—ï¼šhttp://shop114407458.taobao.com/
 **************************************************************************/
 extern float angle2, angle_dot; 	
 void Kalman_Filter(float Accel,float Gyro);		
 void Yijielvbo(float angle_m, float gyro_m);
 
-//1. ½á¹¹ÌåÀàĞÍ¶¨Òå
+//1. ç»“æ„ä½“ç±»å‹å®šä¹‰
 typedef struct 
 {
-    float LastP;//ÉÏ´Î¹ÀËãĞ­·½²î ³õÊ¼»¯ÖµÎª0.02
-    float Now_P;//µ±Ç°¹ÀËãĞ­·½²î ³õÊ¼»¯ÖµÎª0
-    float out;//¿¨¶ûÂüÂË²¨Æ÷Êä³ö ³õÊ¼»¯ÖµÎª0
-    float Kg;//¿¨¶ûÂüÔöÒæ ³õÊ¼»¯ÖµÎª0
-    float Q;//¹ı³ÌÔëÉùĞ­·½²î ³õÊ¼»¯ÖµÎª0.001
-    float R;//¹Û²âÔëÉùĞ­·½²î ³õÊ¼»¯ÖµÎª0.543
+    float LastP;//ä¸Šæ¬¡ä¼°ç®—åæ–¹å·® åˆå§‹åŒ–å€¼ä¸º0.02
+    float Now_P;//å½“å‰ä¼°ç®—åæ–¹å·® åˆå§‹åŒ–å€¼ä¸º0
+    float out;//å¡å°”æ›¼æ»¤æ³¢å™¨è¾“å‡º åˆå§‹åŒ–å€¼ä¸º0
+    float Kg;//å¡å°”æ›¼å¢ç›Š åˆå§‹åŒ–å€¼ä¸º0
+    float Q;//è¿‡ç¨‹å™ªå£°åæ–¹å·® åˆå§‹åŒ–å€¼ä¸º0.001
+    float R;//è§‚æµ‹å™ªå£°åæ–¹å·® åˆå§‹åŒ–å€¼ä¸º0.543
 }KFP;//Kalman Filter parameter
 
 
 
-//2. ÒÔ¸ß¶ÈÎªÀı ¶¨Òå¿¨¶ûÂü½á¹¹Ìå²¢³õÊ¼»¯²ÎÊı
+//2. ä»¥é«˜åº¦ä¸ºä¾‹ å®šä¹‰å¡å°”æ›¼ç»“æ„ä½“å¹¶åˆå§‹åŒ–å‚æ•°
 extern KFP KFP_gyro;
+extern KFP KFP_gyro_x;
+extern KFP KFP_gyro_y;
+extern KFP KFP_gyro_z;
+
+extern KFP KFP_acc_x;
+extern KFP KFP_acc_y;
+extern KFP KFP_acc_z;
+
 extern KFP KFP_gyro2;
 extern KFP KFP_gyro22;
 extern float kalmanFilter(KFP *kfp,float input);
